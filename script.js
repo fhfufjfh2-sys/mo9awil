@@ -746,9 +746,43 @@ const app = {
 
     copyCode() {
         if(this.currentUser && this.currentUser.joinCode) {
-            navigator.clipboard.writeText(this.currentUser.joinCode).then(() => {
-                this.showNotification('تم نسخ الرمز بنجاح!');
-            });
+            const code = this.currentUser.joinCode;
+            // Modern clipboard API with fallback for older browsers
+            if(navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(code).then(() => {
+                    this.showNotification('تم نسخ الرمز بنجاح!');
+                }).catch(() => this._fallbackCopy(code));
+            } else {
+                this._fallbackCopy(code);
+            }
+        }
+    },
+
+    // Fallback copy for Safari < 13.1 and older Android browsers
+    _fallbackCopy(text) {
+        try {
+            const el = document.createElement('textarea');
+            el.value = text;
+            el.setAttribute('readonly', '');
+            el.style.cssText = 'position:fixed;opacity:0;top:0;left:0;';
+            document.body.appendChild(el);
+            el.focus();
+            el.select();
+            // iOS requires special selection
+            if(navigator.userAgent.match(/ipad|iphone/i)) {
+                const range = document.createRange();
+                range.selectNodeContents(el);
+                const sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(range);
+                el.setSelectionRange(0, 999999);
+            }
+            const ok = document.execCommand('copy');
+            document.body.removeChild(el);
+            if(ok) this.showNotification('تم نسخ الرمز بنجاح!');
+            else this.showNotification('الرمز: ' + text);
+        } catch(e) {
+            this.showNotification('الرمز: ' + text);
         }
     },
 

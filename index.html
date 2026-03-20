@@ -2,6 +2,8 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0a0f1e">
     <meta name="mobile-web-app-capable" content="yes">
@@ -12,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=13">
 </head>
 <body>
     <!-- Animated Particle Background -->
@@ -337,11 +339,32 @@
     </div>
 
     <!-- Supabase Library -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
     
+    <!-- Cross-browser Polyfills -->
+    <script>
+        // requestAnimationFrame polyfill
+        (function(){
+            var lastTime=0;
+            ['webkit','moz','ms','o'].forEach(function(p){
+                if(!window.requestAnimationFrame) window.requestAnimationFrame = window[p+'RequestAnimationFrame'];
+                if(!window.cancelAnimationFrame) window.cancelAnimationFrame = window[p+'CancelAnimationFrame'] || window[p+'CancelRequestAnimationFrame'];
+            });
+            if(!window.requestAnimationFrame) window.requestAnimationFrame=function(cb){
+                var now=Date.now(),next=Math.max(0,16-(now-lastTime)),id=setTimeout(function(){cb(lastTime=now+next);},next);
+                return id;
+            };
+            if(!window.cancelAnimationFrame) window.cancelAnimationFrame=function(id){clearTimeout(id);};
+        })();
+        // Object.assign polyfill
+        if(typeof Object.assign!='function'){Object.defineProperty(Object,'assign',{value:function assign(t){if(t==null)throw new TypeError('Cannot convert undefined or null to object');var to=Object(t);for(var i=1;i<arguments.length;i++){var s=arguments[i];if(s!=null){for(var k in s){if(Object.prototype.hasOwnProperty.call(s,k))to[k]=s[k];}}}return to;},writable:true,configurable:true});}
+        // Promise.finally polyfill
+        if(!Promise.prototype.finally){Promise.prototype.finally=function(fn){return this.then(function(v){return Promise.resolve(fn()).then(function(){return v;});},function(e){return Promise.resolve(fn()).then(function(){throw e;});});};}
+    </script>
+
     <!-- App Scripts -->
-    <script src="config.js?v=13"></script>
-    <script src="script.js?v=13"></script>
+    <script src="config.js?v=14"></script>
+    <script src="script.js?v=14"></script>
 
     <!-- Particle Animation -->
     <script>
