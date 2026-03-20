@@ -3,6 +3,7 @@ const app = {
     currentUser: null,
     chatInterval: null,
     selectedChatFile: null,
+    lastMessagesState: '',
     
     // Initialize App
     async init() {
@@ -497,8 +498,11 @@ const app = {
         const chatWin = document.getElementById('chatWindow');
         chatWin.classList.toggle('d-none');
         if(!chatWin.classList.contains('d-none')) {
+            // Force refresh when opened
+            this.lastMessagesState = '';
             this.loadMessages();
-            this.chatInterval = setInterval(() => this.loadMessages(), 3000);
+            // Polling interval expanded to 7s instead of 3s to relieve network congestion
+            this.chatInterval = setInterval(() => this.loadMessages(), 7000);
             setTimeout(() => {
                 const area = document.getElementById('chatMessagesArea');
                 area.scrollTop = area.scrollHeight;
@@ -511,13 +515,23 @@ const app = {
     async loadMessages() {
         if(!this.currentUser) return;
         try {
+            // Fetch only the last 50 messages to reduce network load heavily
             const { data, error } = await supabaseClient
                 .from('messages')
                 .select('*')
                 .eq('building_join_code', this.currentUser.joinCode)
-                .order('created_at', { ascending: true });
+                .order('created_at', { ascending: false })
+                .limit(50);
                 
             if(error) return;
+            
+            // Fast State Comparison to avoid useless DOM/String processing
+            const currentState = JSON.stringify(data);
+            if(this.lastMessagesState === currentState) return;
+            this.lastMessagesState = currentState;
+            
+            // Reverse to restore chronological order for UI
+            if(data && data.length > 0) data.reverse();
             
             const area = document.getElementById('chatMessagesArea');
             const wasAtBottom = area.scrollHeight - area.clientHeight <= area.scrollTop + 50;
