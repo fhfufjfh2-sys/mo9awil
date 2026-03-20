@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة عمارة - سانديك</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Main Container -->
+    <div class="app-container">
+        
+        <!-- Navbar -->
+        <nav class="navbar" id="navbar">
+            <div class="logo">
+                <i class="fa-solid fa-building-user"></i>
+                <span>عمارة <strong>سانديك</strong></span>
+            </div>
+            <div class="nav-actions">
+                <button id="logoutBtn" class="btn btn-outline d-none"><i class="fa-solid fa-right-from-bracket"></i> خروج</button>
+            </div>
+        </nav>
+
+        <!-- Screens -->
+        <main class="main-content">
+            
+            <!-- ====== Screen 1: Home (Role Selection) ====== -->
+            <section id="screen-home" class="screen active">
+                <div class="header-text text-center">
+                    <h1>مرحباً بك في نظام إدارة العمارات</h1>
+                    <p>منصة احترافية، آمنة وموثوقة لتسيير شؤون العمارة بكل سهولة.</p>
+                </div>
+
+                <h3 class="role-title">يرجى اختيار صفتك للمتابعة:</h3>
+                
+                <div class="roles-container">
+                    <div class="role-card" onclick="app.navigateTo('screen-syndic-setup')">
+                        <div class="role-icon">
+                            <i class="fa-solid fa-user-tie"></i>
+                        </div>
+                        <h3>مسؤول العمارة (سانديك)</h3>
+                        <p>إنشاء حساب العمارة والحصول على الرمز السري للملاك</p>
+                    </div>
+
+                    <div class="role-card" onclick="app.navigateTo('screen-resident-setup')">
+                        <div class="role-icon">
+                            <i class="fa-solid fa-house-user"></i>
+                        </div>
+                        <h3>صاحب شقة</h3>
+                        <p>الانضمام للعمارة الخاصة بك باستخدام الرمز المعطى لك</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ====== Screen 2: Syndic Setup ====== -->
+            <section id="screen-syndic-setup" class="screen">
+                <div class="auth-card">
+                    <button class="back-btn" onclick="app.navigateTo('screen-home')"><i class="fa-solid fa-arrow-right"></i> رجوع</button>
+                    
+                    <!-- Tabs -->
+                    <div class="auth-tabs" style="display:flex; margin-bottom:1.5rem; border-bottom:1px solid var(--border);">
+                        <button id="tabSyndicLogin" class="tab-btn active" onclick="app.switchSyndicAuthTab('login')" style="flex:1; padding:0.75rem; background:transparent; border:none; border-bottom:2px solid var(--primary); color:var(--text-main); font-weight:bold; cursor:pointer; font-size:1rem;">تسجيل الدخول</button>
+                        <button id="tabSyndicRegister" class="tab-btn" onclick="app.switchSyndicAuthTab('register')" style="flex:1; padding:0.75rem; background:transparent; border:none; border-bottom:2px solid transparent; color:var(--text-muted); font-weight:bold; cursor:pointer; font-size:1rem;">حساب جديد</button>
+                    </div>
+
+                    <!-- Login Form -->
+                    <div id="syndicLoginFormWrapper">
+                        <div class="auth-header" style="margin-bottom: 1.5rem;">
+                            <i class="fa-solid fa-user-lock auth-icon"></i>
+                            <h2>تسجيل الدخول للسانديك</h2>
+                            <p>أدخل رمز العمارة الخاص بك للوصول للوحة التحكم.</p>
+                        </div>
+                        <form id="syndicLoginForm" onsubmit="app.loginSyndic(event)">
+                            <div class="input-group">
+                                <label for="syndicLoginCode">رمز العمارة</label>
+                                <input type="text" id="syndicLoginCode" required class="code-input" placeholder="مثال: AK7X9P">
+                            </div>
+                            <div class="input-group">
+                                <label for="syndicLoginPassword">الرمز السري للمدير</label>
+                                <input type="password" id="syndicLoginPassword" required placeholder="أدخل الرمز السري">
+                            </div>
+                            <div id="syndicLoginError" class="error-msg d-none"><i class="fa-solid fa-circle-exclamation"></i> خطأ في رمز العمارة أو الرمز السري.</div>
+                            <button type="submit" class="btn btn-primary btn-block">دخول <i class="fa-solid fa-right-to-bracket"></i></button>
+                        </form>
+                    </div>
+
+                    <!-- Register Form -->
+                    <div id="syndicRegisterFormWrapper" class="d-none">
+                        <div class="auth-header" style="margin-bottom: 1.5rem;">
+                            <i class="fa-solid fa-user-tie auth-icon"></i>
+                            <h2>إنشاء حساب العمارة</h2>
+                            <p>قم بإنشاء السجل الخاص بعمارتك لتبدأ في إدارتها.</p>
+                        </div>
+                        
+                        <form id="syndicForm" onsubmit="app.registerSyndic(event)">
+                            <div class="input-group">
+                                <label for="syndicName">اسم المسؤول الكامل</label>
+                                <input type="text" id="syndicName" required placeholder="مثال: أحمد محمد">
+                            </div>
+                            <div class="input-group">
+                                <label for="buildingName">اسم العمارة أو المجمع</label>
+                                <input type="text" id="buildingName" required placeholder="مثال: إقامة النور">
+                            </div>
+                            <div class="input-group">
+                                <label for="syndicPasswordReg">الرمز السري للمسؤول</label>
+                                <input type="password" id="syndicPasswordReg" required placeholder="اختر رمزاً سرياً لتدخل به لاحقاً">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">إنشاء حساب جديد <i class="fa-solid fa-check"></i></button>
+                        </form>
+                    </div>
+
+                </div>
+            </section>
+
+
+            <!-- ====== Screen 3: Syndic Dashboard ====== -->
+            <section id="screen-syndic-dashboard" class="screen">
+                <div class="dashboard-header mt-2">
+                    <h2>لوحة تحكم السانديك</h2>
+                    <p>مرحباً <span id="dashSyndicName" class="highlight"></span>، تدير حاليا <span id="dashBuildingName" class="highlight"></span></p>
+                </div>
+
+                <div class="code-card">
+                    <div class="code-info">
+                        <h3><i class="fa-solid fa-key"></i> رمز الانضمام للعمارة</h3>
+                        <p>شارك هذا الرمز مع أصحاب الشقق ليتمكنوا من الانضمام لعِِِمارتك في التطبيق.</p>
+                    </div>
+                    <div class="code-display" id="buildingCodeDisplay">
+                        ------
+                    </div>
+                    <button class="btn btn-outline" onclick="app.copyCode()"><i class="fa-solid fa-copy"></i> نسخ الرمز</button>
+                </div>
+
+                <div class="grid-dashboard">
+                    <div class="stat-card">
+                        <i class="fa-solid fa-users stat-icon"></i>
+                        <h4>الشقق المسجلة</h4>
+                        <div class="stat-value" id="statsApartments">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fa-solid fa-money-bill-wave stat-icon"></i>
+                        <h4>الرصيد الإجمالي</h4>
+                        <div class="stat-value">0 درهم</div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fa-solid fa-triangle-exclamation stat-icon" style="color:#eab308"></i>
+                        <h4>شكاوى جديدة</h4>
+                        <div class="stat-value" id="statsComplaints">0</div>
+                    </div>
+                </div>
+
+                <div class="table-container mt-4">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+                        <h3 style="margin-bottom:0;"><i class="fa-solid fa-list-ul"></i> قائمة الملاك المنضمين</h3>
+                        <button class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem;" onclick="app.toggleAddAptForm()"><i class="fa-solid fa-plus"></i> إضافة شقة يدوياً</button>
+                    </div>
+
+                    <!-- Form to add apartement manually -->
+                    <div id="addAptFormContainer" class="d-none" style="background:var(--surface); padding:1.5rem; border-radius:var(--border-radius); border:1px solid var(--border); margin-bottom:1.5rem;">
+                        <h4 style="margin-bottom: 1rem; color:var(--text-main);">تسجيل شقة جديدة</h4>
+                        <form id="manualAptForm" onsubmit="app.syndicAddResident(event)" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
+                            <div class="input-group" style="margin-bottom: 0; flex: 1; min-width: 200px;">
+                                <label for="manualAptName">اسم المالك / الساكن</label>
+                                <input type="text" id="manualAptName" required placeholder="مثال: يوسف علي">
+                            </div>
+                            <div class="input-group" style="margin-bottom: 0; flex: 1; min-width: 150px;">
+                                <label for="manualAptNum">رقم الشقة</label>
+                                <input type="text" id="manualAptNum" required placeholder="مثال: 12">
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="height: 48px;"><i class="fa-solid fa-check"></i> حفظ</button>
+                        </form>
+                    </div>
+
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th>اسم المالك</th>
+                                <th>رقم الشقة</th>
+                                <th>تاريخ الانضمام</th>
+                                <th>الحالة</th>
+                                <th>الواجب الشهري</th>
+                                <th>إنذار</th>
+                                <th>إزالة</th>
+                            </tr>
+                        </thead>
+                        <tbody id="residentsTableBody">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Complaints Section -->
+                <div class="table-container mt-4" style="border-top:4px solid #eab308; margin-bottom:3rem;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+                        <h3 style="margin-bottom:0;"><i class="fa-solid fa-bullhorn" style="color:#eab308"></i> صندوق الشكاوى </h3>
+                    </div>
+                    <div id="syndicComplaintsArea" style="display:flex; flex-direction:column; gap:1rem;">
+                        <!-- Complaints will render here -->
+                    </div>
+                </div>
+
+            </section>
+
+
+            <!-- ====== Screen 4: Resident Setup ====== -->
+            <section id="screen-resident-setup" class="screen">
+                <div class="auth-card">
+                    <button class="back-btn" onclick="app.navigateTo('screen-home')"><i class="fa-solid fa-arrow-right"></i> رجوع</button>
+                    <div class="auth-header">
+                        <i class="fa-solid fa-house-user auth-icon"></i>
+                        <h2>تسجيل الدخول كصاحب شقة</h2>
+                        <p>أدخل بياناتك ورمز العمارة الذي استلمته من السانديك.</p>
+                    </div>
+                    
+                    <form id="residentForm" onsubmit="app.registerResident(event)">
+                        <div class="input-group">
+                            <label for="residentName">اسم صاحب الشقة</label>
+                            <input type="text" id="residentName" required placeholder="مثال: يوسف علي">
+                        </div>
+                        <div class="input-group">
+                            <label for="apartmentNumber">رقم الشقة (أو الباب)</label>
+                            <input type="text" id="apartmentNumber" required placeholder="مثال: 12 أو B-4">
+                        </div>
+                        <div class="input-group">
+                            <label for="joinCode">رمز العمارة السري</label>
+                            <input type="text" id="joinCode" required placeholder="أدخل الرمز المكون من 6 أرقام/حروف" class="code-input">
+                        </div>
+                        
+                        <div id="joinError" class="error-msg d-none"><i class="fa-solid fa-circle-exclamation"></i> الرمز غير صحيح! المرجو التأكد من مسؤول العمارة.</div>
+
+                        <button type="submit" class="btn btn-primary btn-block">انضمام للعمارة <i class="fa-solid fa-right-to-bracket"></i></button>
+                    </form>
+                </div>
+            </section>
+
+
+            <!-- ====== Screen 5: Resident Dashboard ====== -->
+            <section id="screen-resident-dashboard" class="screen">
+                <div class="dashboard-header mt-2">
+                    <h2>ملف الشقة</h2>
+                    <p>مرحباً <strong id="dashResName"></strong>، شقة رقم <strong id="dashResApt"></strong></p>
+                </div>
+
+                <div id="resWarningBox" class="error-msg d-none mt-3" style="background:#fef2f2; color:var(--danger); border:1px solid #fecaca; padding:1rem; border-radius:var(--border-radius);">
+                    <i class="fa-solid fa-triangle-exclamation" style="font-size:1.5rem;"></i>
+                    <div style="margin-right:10px;">
+                        <strong>تنبيه من إدارة العمارة:</strong><br>
+                        المرجو تسوية وضعيتكم بخصوص أدائكم للواجبات الشهرية.
+                    </div>
+                </div>
+
+                <div class="building-info-card mt-3">
+                    <div class="b-icon"><i class="fa-solid fa-city"></i></div>
+                    <div class="b-details">
+                        <h3 id="dashResBuildingName">اسم العمارة</h3>
+                        <p>السانديك المسؤول: <strong id="dashResSyndicName"></strong></p>
+                    </div>
+                </div>
+
+                <div class="grid-dashboard mt-3">
+                    <div class="stat-card">
+                        <i class="fa-solid fa-file-invoice-dollar stat-icon"></i>
+                        <h4>الواجب الشهري</h4>
+                        <div id="resPaymentStatus" class="stat-value text-success">مدفوع</div>
+                        <p class="stat-desc">الشهر الحالي</p>
+                    </div>
+                    <div class="stat-card" style="cursor:pointer;" onclick="app.toggleComplaintForm()">
+                        <i class="fa-solid fa-bullhorn stat-icon"></i>
+                        <h4>إرسال شكوى</h4>
+                        <div class="stat-value text-sm mt-1">للسانديك</div>
+                    </div>
+                </div>
+
+                <div id="complaintFormContainer" class="d-none mt-3" style="background:#f8fafc; padding:1.5rem; border-radius:var(--border-radius); border:1px solid var(--border);">
+                    <h4 style="margin-bottom: 1rem; color:var(--text-main);"><i class="fa-solid fa-bullhorn"></i> كتابة شكوى جديدة</h4>
+                    <form id="complaintForm" onsubmit="app.submitComplaint(event)">
+                        <textarea id="complaintText" required placeholder="اكتب تفاصيل الشكوى، الاقتراح أو المشكلة الموجهة للسانديك..." style="width:100%; padding:0.8rem; border:1px solid var(--border); border-radius:var(--border-radius); margin-bottom:1rem; outline:none; resize:vertical; min-height:80px; font-family:inherit;"></textarea>
+                        <div style="display:flex; gap:10px;">
+                            <button type="submit" class="btn btn-primary" style="flex:1;"><i class="fa-solid fa-paper-plane"></i> إرسال الشكوى</button>
+                            <button type="button" class="btn btn-outline" style="flex:1;" onclick="app.toggleComplaintForm()">إلغاء</button>
+                        </div>
+                    </form>
+                </div>
+
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Notification system -->
+    <div id="notification" class="notification">
+        <span id="notif-message">تمت العملية بنجاح!</span>
+    </div>
+
+    <!-- Floating Chat Button -->
+    <button id="floatingChatBtn" class="floating-chat-btn d-none" onclick="app.toggleChat()">
+        <i class="fa-solid fa-comments"></i>
+    </button>
+
+    <!-- Chat Window Modal -->
+    <div id="chatWindow" class="chat-window d-none">
+        <div class="chat-header">
+            <h3><i class="fa-regular fa-comments"></i> شات العمارة</h3>
+            <button onclick="app.toggleChat()" class="btn-close"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="chat-messages" id="chatMessagesArea">
+            <!-- Messages will be injected here -->
+        </div>
+        <form class="chat-input-area" onsubmit="app.sendMessage(event)">
+            <input type="text" id="chatMessageInput" required placeholder="اكتب رسالتك هنا...">
+            <button type="submit" class="btn btn-primary" style="height:auto;"><i class="fa-solid fa-paper-plane"></i></button>
+        </form>
+    </div>
+
+    <!-- Supabase Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- App Scripts -->
+    <script src="config.js?v=9"></script>
+    <script src="script.js?v=9"></script>
+</body>
+</html>
