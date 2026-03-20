@@ -83,7 +83,7 @@ const app = {
     async loginSyndic(event) {
         event.preventDefault();
         const code = document.getElementById('syndicLoginCode').value.trim().toUpperCase();
-        const password = document.getElementById('syndicLoginPassword').value;
+        const password = document.getElementById('syndicLoginPassword').value.trim();
         
         try {
             // Fetch building from Supabase checking both code and password

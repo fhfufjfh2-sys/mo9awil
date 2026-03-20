@@ -804,10 +804,149 @@ textarea:focus {
     box-shadow: 0 0 0 3px var(--primary-glow) !important;
 }
 
-/* Responsive */
+/* ======= MOBILE RESPONSIVE ======= */
+
+/* Prevent iOS zoom on inputs */
+input, textarea, select {
+    font-size: 16px !important;
+}
+
+/* Better touch scrolling */
+html {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+}
+
 @media (max-width: 600px) {
+    /* Layout */
     .main-content { padding: 1rem; }
-    .code-card { flex-direction: column; text-align: center; }
+    .app-container { max-width: 100%; }
+
+    /* Navbar */
+    .navbar { padding: 1rem; }
+    .navbar .logo { font-size: 1.1rem; }
+
+    /* Auth card */
+    .auth-card { padding: 1.5rem 1.2rem; }
+
+    /* Dashboard header */
+    .dashboard-header h2 { font-size: 1.4rem; }
+
+    /* Code Card */
+    .code-card { 
+        flex-direction: column; 
+        text-align: center;
+        padding: 1.25rem;
+    }
     .code-info h3 { justify-content: center; }
-    .modern-table { display: block; overflow-x: auto; }
+    .code-display {
+        font-size: 1.5rem; 
+        letter-spacing: 4px;
+        padding: 0.6rem 1.2rem;
+    }
+
+    /* Stats Grid */
+    .grid-dashboard {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+    }
+    .stat-card { padding: 1rem; }
+    .stat-icon { font-size: 1.4rem; margin-bottom: 0.5rem; }
+    .stat-value { font-size: 1.3rem; }
+    .stat-card h4 { font-size: 0.8rem; }
+
+    /* Table - Mobile Card View */
+    .modern-table { display: block; }
+    .modern-table thead { display: none; }
+    .modern-table tbody { display: block; }
+    .modern-table tr {
+        display: block;
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: var(--border-radius);
+        margin-bottom: 0.75rem;
+        padding: 0.75rem;
+    }
+    .modern-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.4rem 0.25rem;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+        font-size: 0.9rem;
+        text-align: right;
+    }
+    .modern-table td:last-child { border-bottom: none; }
+    .modern-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--primary);
+        font-size: 0.8rem;
+        flex-shrink: 0;
+        margin-left: 0.5rem;
+    }
+
+    /* Table buttons smaller on mobile */
+    .modern-table .btn {
+        padding: 0.3rem 0.5rem !important;
+        font-size: 0.8rem !important;
+        width: auto !important;
+    }
+
+    /* Table container */
+    .table-container { padding: 1rem; }
+
+    /* Complaint cards */
+    #syndicComplaintsArea > div { padding: 0.75rem !important; }
+
+    /* Building info card */
+    .building-info-card { padding: 1rem; }
+
+    /* Buttons */
+    .btn { padding: 0.65rem 1.1rem; font-size: 0.95rem; }
+    .btn-block { padding: 0.9rem; }
+
+    /* Chat window full width on small phones */
+    .chat-window {
+        width: 95%;
+        right: 2.5%;
+        bottom: 85px;
+        height: 70vh;
+    }
+    .floating-chat-btn {
+        bottom: 16px;
+        right: 16px;
+        width: 56px;
+        height: 56px;
+        font-size: 1.5rem;
+    }
+
+    /* Chat input area */
+    .chat-input-area input[type="text"] { 
+        font-size: 14px !important; 
+        padding: 0.6rem;
+    }
+
+    /* Notification */
+    .notification {
+        width: 90%;
+        text-align: center;
+        font-size: 0.9rem;
+    }
+
+    /* Home screen role cards */
+    .roles-container { grid-template-columns: 1fr; }
+    .role-card { padding: 2rem 1.25rem; }
+    .header-text h1 { font-size: 1.5rem; }
+    .header-text p { font-size: 1rem; }
+
+    /* Manual apartment form */
+    #manualAptForm { flex-direction: column; }
+    #manualAptForm .input-group { min-width: unset !important; }
+    #manualAptForm button { width: 100%; }
+}
+
+@media (max-width: 360px) {
+    .grid-dashboard { grid-template-columns: 1fr; }
+    .code-display { font-size: 1.2rem; letter-spacing: 3px; }
 }

@@ -2,7 +2,11 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0a0f1e">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>إدارة عمارة - سانديك</title>
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
@@ -80,11 +84,11 @@
                         <form id="syndicLoginForm" onsubmit="app.loginSyndic(event)">
                             <div class="input-group">
                                 <label for="syndicLoginCode">رمز العمارة</label>
-                                <input type="text" id="syndicLoginCode" required class="code-input" placeholder="مثال: AK7X9P">
+                                <input type="text" id="syndicLoginCode" required class="code-input" placeholder="مثال: AK7X9P" autocapitalize="characters" autocorrect="off" autocomplete="off" spellcheck="false">
                             </div>
                             <div class="input-group">
                                 <label for="syndicLoginPassword">الرمز السري للمدير</label>
-                                <input type="password" id="syndicLoginPassword" required placeholder="أدخل الرمز السري">
+                                <input type="password" id="syndicLoginPassword" required placeholder="أدخل الرمز السري" autocomplete="current-password">
                             </div>
                             <div id="syndicLoginError" class="error-msg d-none"><i class="fa-solid fa-circle-exclamation"></i> خطأ في رمز العمارة أو الرمز السري.</div>
                             <button type="submit" class="btn btn-primary btn-block">دخول <i class="fa-solid fa-right-to-bracket"></i></button>
@@ -102,15 +106,15 @@
                         <form id="syndicForm" onsubmit="app.registerSyndic(event)">
                             <div class="input-group">
                                 <label for="syndicName">اسم المسؤول الكامل</label>
-                                <input type="text" id="syndicName" required placeholder="مثال: أحمد محمد">
+                                <input type="text" id="syndicName" required placeholder="مثال: أحمد محمد" autocomplete="name" autocapitalize="words">
                             </div>
                             <div class="input-group">
                                 <label for="buildingName">اسم العمارة أو المجمع</label>
-                                <input type="text" id="buildingName" required placeholder="مثال: إقامة النور">
+                                <input type="text" id="buildingName" required placeholder="مثال: إقامة النور" autocapitalize="words">
                             </div>
                             <div class="input-group">
                                 <label for="syndicPasswordReg">الرمز السري للمسؤول</label>
-                                <input type="password" id="syndicPasswordReg" required placeholder="اختر رمزاً سرياً لتدخل به لاحقاً">
+                                <input type="password" id="syndicPasswordReg" required placeholder="اختر رمزاً سرياً لتدخل به لاحقاً" autocomplete="new-password">
                             </div>
                             <button type="submit" class="btn btn-primary btn-block">إنشاء حساب جديد <i class="fa-solid fa-check"></i></button>
                         </form>
@@ -222,15 +226,15 @@
                     <form id="residentForm" onsubmit="app.registerResident(event)">
                         <div class="input-group">
                             <label for="residentName">اسم صاحب الشقة</label>
-                            <input type="text" id="residentName" required placeholder="مثال: يوسف علي">
+                            <input type="text" id="residentName" required placeholder="مثال: يوسف علي" autocapitalize="words" autocomplete="name">
                         </div>
                         <div class="input-group">
                             <label for="apartmentNumber">رقم الشقة (أو الباب)</label>
-                            <input type="text" id="apartmentNumber" required placeholder="مثال: 12 أو B-4">
+                            <input type="text" id="apartmentNumber" required placeholder="مثال: 12 أو B-4" autocapitalize="none" autocorrect="off">
                         </div>
                         <div class="input-group">
                             <label for="joinCode">رمز العمارة السري</label>
-                            <input type="text" id="joinCode" required placeholder="أدخل الرمز المكون من 6 أرقام/حروف" class="code-input">
+                            <input type="text" id="joinCode" required placeholder="أدخل الرمز المكون من 6 أرقام/حروف" class="code-input" autocapitalize="characters" autocorrect="off" autocomplete="off" spellcheck="false">
                         </div>
                         
                         <div id="joinError" class="error-msg d-none"><i class="fa-solid fa-circle-exclamation"></i> الرمز غير صحيح! المرجو التأكد من مسؤول العمارة.</div>
