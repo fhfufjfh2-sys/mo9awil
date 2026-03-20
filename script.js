@@ -158,6 +158,9 @@ const app = {
     async loadSyndicDashboard() {
         if(!this.currentUser) return;
         
+        // Always navigate first so the user sees the dashboard immediately
+        this.navigateTo('screen-syndic-dashboard');
+        
         try {
             // Get Residents from Supabase
             const { data: residents, error } = await supabaseClient
@@ -166,40 +169,76 @@ const app = {
                 .eq('building_join_code', this.currentUser.joinCode)
                 .order('created_at', { ascending: false });
 
-            if(error) throw error;
-
             document.getElementById('dashSyndicName').innerText = this.currentUser.name;
             document.getElementById('dashBuildingName').innerText = this.currentUser.buildingName;
             document.getElementById('buildingCodeDisplay').innerText = this.currentUser.joinCode;
-            document.getElementById('statsApartments').innerText = residents ? residents.length : 0;
             
-            // Get Complaints from Supabase
-            const { data: complaints, error: compErr } = await supabaseClient
+            if(!error) {
+                document.getElementById('statsApartments').innerText = residents ? residents.length : 0;
+                const tbody = document.getElementById('residentsTableBody');
+                tbody.innerHTML = '';
+                if(!residents || residents.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="7" class="text-center" style="color:var(--text-muted)">لم ينضم أي ملاك بعد. شارك الرمز السري لبدء الإدارة.</td></tr>`;
+                } else {
+                    residents.forEach(res => {
+                        const paidClass = res.has_paid ? 'btn-success' : 'btn-outline';
+                        const paidText = res.has_paid ? '<i class="fa-solid fa-check"></i> مدفوع' : 'غير مدفوع';
+                        const warnClass = res.has_warning ? 'btn-danger' : 'btn-outline';
+                        const warnText = res.has_warning ? '<i class="fa-solid fa-triangle-exclamation"></i> تم الإنذار' : 'توجيه إنذار';
+                        tbody.innerHTML += `
+                            <tr>
+                                <td>${res.name}</td>
+                                <td>${res.apt_number}</td>
+                                <td>${res.join_date}</td>
+                                <td><span class="status-badge">${res.is_manual ? 'مضاف يدوياً' : 'منضم حديثاً'}</span></td>
+                                <td>
+                                    <button class="btn ${paidClass}" onclick="app.togglePayment('${res.id}', ${!res.has_paid})" style="font-size:0.85rem; padding:0.4rem 0.8rem; width:100px;">
+                                        ${paidText}
+                                    </button>
+                                </td>
+                                <td>
+                                    <button class="btn ${warnClass}" onclick="app.toggleWarning('${res.id}', ${!res.has_warning})" style="font-size:0.85rem; padding:0.4rem 0.8rem; width:110px;">
+                                        ${warnText}
+                                    </button>
+                                </td>
+                                <td>
+                                    <button class="btn btn-outline" style="color:var(--danger); border-color:var(--danger); font-size:0.85rem; padding:0.4rem 0.8rem;" onclick="app.removeResident('${res.id}', '${res.name}')">
+                                        <i class="fa-solid fa-trash-can"></i> إزالة
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                }
+            }
+        } catch(err) {
+            console.error('Residents fetch error:', err);
+        }
+
+        // Load complaints separately - won't block login if table missing
+        try {
+            const { data: complaints } = await supabaseClient
                 .from('complaints')
                 .select('*')
                 .eq('building_join_code', this.currentUser.joinCode)
                 .order('created_at', { ascending: false });
 
-            // Calculate active complaints
             const activeComplaints = complaints ? complaints.filter(c => !c.is_resolved) : [];
             const compStats = document.getElementById('statsComplaints');
-            if (compStats) compStats.innerText = activeComplaints.length;
-            
-            // Render complaints
+            if(compStats) compStats.innerText = activeComplaints.length;
+
             const compArea = document.getElementById('syndicComplaintsArea');
-            if (compArea) {
+            if(compArea) {
                 compArea.innerHTML = '';
                 if(!complaints || complaints.length === 0) {
                     compArea.innerHTML = '<div class="text-center" style="color:var(--text-muted); padding:1rem;">لا توجد أي شكاوى حالياً.</div>';
                 } else {
                     complaints.forEach(c => {
                         const statusBadge = c.is_resolved ? '<span class="status-badge" style="background:#dcfce7; color:#059669;">معالجة</span>' : '<span class="status-badge" style="background:#fee2e2; color:#dc2626;">قيد الانتظار</span>';
-                        const actionBtn = c.is_resolved 
+                        const actionBtn = c.is_resolved
                             ? `<button class="btn btn-outline" style="font-size:0.8rem; padding:0.3rem 0.6rem;" onclick="app.deleteComplaint('${c.id}')"><i class="fa-solid fa-trash"></i> مسح</button>`
                             : `<button class="btn btn-success" style="font-size:0.8rem; padding:0.3rem 0.6rem;" onclick="app.resolveComplaint('${c.id}')"><i class="fa-solid fa-check"></i> تحديد كمعالجة</button>`;
-                        
                         const dateStr = new Date(c.created_at).toLocaleDateString('ar-MA');
-                        
                         compArea.innerHTML += `
                             <div style="background:#fff; border:1px solid var(--border); border-radius:var(--border-radius); padding:1rem; box-shadow:0 2px 4px rgba(0,0,0,0.02); display:flex; flex-direction:column; gap:0.5rem;">
                                 <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -208,58 +247,13 @@ const app = {
                                 </div>
                                 <div style="color:var(--text-muted); font-size:0.85rem;">تاريخ الشكوى: ${dateStr}</div>
                                 <p style="color:var(--text-main); line-height:1.5; margin:0.5rem 0; background:#f8fafc; padding:0.8rem; border-radius:8px;">${c.complaint_text}</p>
-                                <div style="display:flex; justify-content:flex-end;">
-                                    ${actionBtn}
-                                </div>
-                            </div>
-                        `;
+                                <div style="display:flex; justify-content:flex-end;">${actionBtn}</div>
+                            </div>`;
                     });
                 }
             }
-
-            const tbody = document.getElementById('residentsTableBody');
-            tbody.innerHTML = '';
-            
-            if(!residents || residents.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="text-center" style="color:var(--text-muted)">لم ينضم أي ملاك بعد. شارك الرمز السري لبدء الإدارة.</td></tr>`;
-            } else {
-                residents.forEach(res => {
-                    const paidClass = res.has_paid ? 'btn-success' : 'btn-outline';
-                    const paidText = res.has_paid ? '<i class="fa-solid fa-check"></i> مدفوع' : 'غير مدفوع';
-                    
-                    const warnClass = res.has_warning ? 'btn-danger' : 'btn-outline';
-                    const warnText = res.has_warning ? '<i class="fa-solid fa-triangle-exclamation"></i> تم الإنذار' : 'توجيه إنذار';
-
-                    tbody.innerHTML += `
-                        <tr>
-                            <td>${res.name}</td>
-                            <td>${res.apt_number}</td>
-                            <td>${res.join_date}</td>
-                            <td><span class="status-badge">${res.is_manual ? 'مضاف يدوياً' : 'منضم حديثاً'}</span></td>
-                            <td>
-                                <button class="btn ${paidClass}" onclick="app.togglePayment('${res.id}', ${!res.has_paid})" style="font-size:0.85rem; padding:0.4rem 0.8rem; width:100px;">
-                                    ${paidText}
-                                </button>
-                            </td>
-                            <td>
-                                <button class="btn ${warnClass}" onclick="app.toggleWarning('${res.id}', ${!res.has_warning})" style="font-size:0.85rem; padding:0.4rem 0.8rem; width:110px;">
-                                    ${warnText}
-                                </button>
-                            </td>
-                            <td>
-                                <button class="btn btn-outline" style="color:var(--danger); border-color:var(--danger); font-size:0.85rem; padding:0.4rem 0.8rem;" onclick="app.removeResident('${res.id}', '${res.name}')">
-                                    <i class="fa-solid fa-trash-can"></i> إزالة
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                });
-            }
-            this.navigateTo('screen-syndic-dashboard');
         } catch(err) {
-            console.error(err);
-            this.showNotification('حدث خطأ في جلب بيانات الملاك.');
-            this.navigateTo('screen-syndic-dashboard'); // show offline cache eventually, but just load naked for now
+            console.error('Complaints fetch skipped (table may not exist yet):', err);
         }
     },
 
