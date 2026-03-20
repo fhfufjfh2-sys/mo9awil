@@ -311,9 +311,17 @@
         <div class="chat-messages" id="chatMessagesArea">
             <!-- Messages will be injected here -->
         </div>
-        <form class="chat-input-area" onsubmit="app.sendMessage(event)">
-            <input type="text" id="chatMessageInput" required placeholder="اكتب رسالتك هنا...">
-            <button type="submit" class="btn btn-primary" style="height:auto;"><i class="fa-solid fa-paper-plane"></i></button>
+        <form class="chat-input-area" onsubmit="app.sendMessage(event)" id="chatForm">
+            <label for="chatFileInput" class="attachment-btn" title="إرفاق ملف (صورة، فيديو، مقطع)">
+                <i class="fa-solid fa-paperclip"></i>
+            </label>
+            <input type="file" id="chatFileInput" class="d-none" onchange="app.handleFileSelect(event)" accept="image/*,video/*,.pdf,.doc,.docx,.txt">
+            
+            <div style="flex:1; display:flex; flex-direction:column;">
+                <div id="chatFilePreview" class="d-none" style="font-size:0.75rem; background:#e0f2fe; color:#0369a1; padding:2px 8px; border-radius:4px; margin-bottom:4px; max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"></div>
+                <input type="text" id="chatMessageInput" placeholder="اكتب رسالتك أو اختر إرفاق ملف...">
+            </div>
+            <button type="submit" class="btn btn-primary" id="chatSendBtn" style="height:auto; padding:0 1.2rem;"><i class="fa-solid fa-paper-plane"></i></button>
         </form>
     </div>
 
@@ -321,7 +329,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <!-- App Scripts -->
-    <script src="config.js?v=9"></script>
-    <script src="script.js?v=9"></script>
+    <script src="config.js?v=10"></script>
+    <script src="script.js?v=10"></script>
 </body>
 </html>

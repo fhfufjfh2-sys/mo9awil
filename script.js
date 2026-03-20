@@ -2,6 +2,7 @@ const app = {
     // Current State
     currentUser: null,
     chatInterval: null,
+    selectedChatFile: null,
     
     // Initialize App
     async init() {
@@ -542,10 +543,27 @@ const app = {
                         senderLabel = 'أنت';
                     }
 
+                    const messageTextHtml = msg.message_text ? `<div style="margin-bottom: 2px;">${msg.message_text}</div>` : '';
+                    let mediaHtml = '';
+                    
+                    if (msg.file_url) {
+                        if (msg.file_type && msg.file_type.startsWith('image/')) {
+                            mediaHtml = `<a href="${msg.file_url}" target="_blank"><img src="${msg.file_url}" class="chat-media-attachment" alt="مرفق صورة"></a>`;
+                        } else if (msg.file_type && msg.file_type.startsWith('video/')) {
+                            mediaHtml = `<video controls src="${msg.file_url}" class="chat-media-attachment"></video>`;
+                        } else {
+                            mediaHtml = `<a href="${msg.file_url}" target="_blank" class="chat-file-attachment">
+                                <i class="fa-solid fa-file-arrow-down" style="font-size:1.2rem;"></i> 
+                                <span style="flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${msg.file_name}</span>
+                            </a>`;
+                        }
+                    }
+
                     html += `
                         <div class="msg-bubble ${typeClass}">
                             <span class="msg-sender-name">${senderLabel}</span>
-                            ${msg.message_text}
+                            ${messageTextHtml}
+                            ${mediaHtml}
                         </div>
                     `;
                 });
@@ -560,15 +578,71 @@ const app = {
         }
     },
 
+    handleFileSelect(event) {
+        const file = event.target.files[0];
+        const preview = document.getElementById('chatFilePreview');
+        if(file) {
+            // Maximum size 10MB
+            if(file.size > 10 * 1024 * 1024) {
+                alert('عذراً، حجم الملف يجب أن لا يتجاوز 10 ميغابايت.');
+                event.target.value = '';
+                this.selectedChatFile = null;
+                preview.classList.add('d-none');
+                return;
+            }
+            this.selectedChatFile = file;
+            preview.innerText = `📎 ${file.name}`;
+            preview.classList.remove('d-none');
+        } else {
+            this.selectedChatFile = null;
+            preview.classList.add('d-none');
+        }
+    },
+
     async sendMessage(event) {
         event.preventDefault();
         const input = document.getElementById('chatMessageInput');
         const text = input.value.trim();
-        if(!text) return;
+        const file = this.selectedChatFile;
+        
+        if(!text && !file) return;
+        
+        const sendBtn = document.getElementById('chatSendBtn');
+        const oldBtnContent = sendBtn.innerHTML;
+        sendBtn.disabled = true;
+        sendBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
         
         input.value = '';
         
         try {
+            let fileUrl = null;
+            let fileType = null;
+            let fileName = null;
+            
+            if(file) {
+                const uniqueName = Date.now() + '_' + Math.random().toString(36).substring(7) + '_' + file.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
+                
+                // Upload to Supabase Storage
+                const { data: uploadData, error: uploadError } = await supabaseClient
+                    .storage
+                    .from('chat_uploads')
+                    .upload(this.currentUser.joinCode + '/' + uniqueName, file);
+                    
+                if(uploadError) {
+                    throw new Error('فشل الرفع. تأكد من إنشاء Bucket باسم chat_uploads في Supabase وأنها Public.');
+                }
+                
+                // Get Public URL
+                const { data: publicUrlData } = supabaseClient
+                    .storage
+                    .from('chat_uploads')
+                    .getPublicUrl(this.currentUser.joinCode + '/' + uniqueName);
+                    
+                fileUrl = publicUrlData.publicUrl;
+                fileType = file.type;
+                fileName = file.name;
+            }
+            
             const { error } = await supabaseClient
                 .from('messages')
                 .insert([{
@@ -576,16 +650,27 @@ const app = {
                     sender_role: this.currentUser.role,
                     sender_name: this.currentUser.name,
                     apt_number: this.currentUser.aptNumber || null,
-                    message_text: text
+                    message_text: text || '',
+                    file_url: fileUrl,
+                    file_type: fileType,
+                    file_name: fileName
                 }]);
             
             if(error) throw error;
+            
+            document.getElementById('chatFileInput').value = '';
+            document.getElementById('chatFilePreview').classList.add('d-none');
+            this.selectedChatFile = null;
+            
             await this.loadMessages();
             const area = document.getElementById('chatMessagesArea');
             area.scrollTop = area.scrollHeight;
         } catch(err) {
             console.error(err);
-            this.showNotification('فشل إرسال الرسالة');
+            alert(err.message || 'فشل إرسال الرسالة');
+        } finally {
+            sendBtn.disabled = false;
+            sendBtn.innerHTML = oldBtnContent;
         }
     },
 
