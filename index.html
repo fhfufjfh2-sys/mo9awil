@@ -27,10 +27,11 @@
         <nav class="navbar" id="navbar">
             <div class="logo">
                 <i class="fa-solid fa-building-user"></i>
-                <span>عمارة <strong>سانديك</strong></span>
+                <span data-i18n="nav.title">عمارة</span> <strong>Syndic</strong>
             </div>
-            <div class="nav-actions">
-                <button id="logoutBtn" class="btn btn-outline d-none"><i class="fa-solid fa-right-from-bracket"></i> خروج</button>
+            <div class="nav-actions" style="display:flex; align-items:center; gap:0.5rem;">
+                <button id="langBtn" class="btn btn-outline" style="padding:0.4rem 0.8rem; font-size:0.9rem; border-color:rgba(0,212,170,0.3);" onclick="i18n.cycle()">🌐 AR</button>
+                <button id="logoutBtn" class="btn btn-outline d-none" data-i18n="nav.logout"><i class="fa-solid fa-right-from-bracket"></i> خروج</button>
             </div>
         </nav>
 
@@ -40,27 +41,23 @@
             <!-- ====== Screen 1: Home (Role Selection) ====== -->
             <section id="screen-home" class="screen active">
                 <div class="header-text text-center">
-                    <h1>مرحباً بك في نظام إدارة العمارات</h1>
-                    <p>منصة احترافية، آمنة وموثوقة لتسيير شؤون العمارة بكل سهولة.</p>
+                    <h1 data-i18n="home.title">مرحباً بك في نظام إدارة العمارات</h1>
+                    <p data-i18n="home.subtitle">منصة احترافية، آمنة وموثوقة لتسيير شؤون العمارة بكل سهولة.</p>
                 </div>
 
-                <h3 class="role-title">يرجى اختيار صفتك للمتابعة:</h3>
+                <h3 class="role-title" data-i18n="home.choose">يرجى اختيار صفتك للمتابعة:</h3>
                 
                 <div class="roles-container">
                     <div class="role-card" onclick="app.navigateTo('screen-syndic-setup')">
-                        <div class="role-icon">
-                            <i class="fa-solid fa-user-tie"></i>
-                        </div>
-                        <h3>مسؤول العمارة (سانديك)</h3>
-                        <p>إنشاء حساب العمارة والحصول على الرمز السري للملاك</p>
+                        <div class="role-icon"><i class="fa-solid fa-user-tie"></i></div>
+                        <h3 data-i18n="home.syndic.title">مسؤول العمارة (سانديك)</h3>
+                        <p data-i18n="home.syndic.desc">إنشاء حساب العمارة والحصول على الرمز السري للملاك</p>
                     </div>
 
                     <div class="role-card" onclick="app.navigateTo('screen-resident-setup')">
-                        <div class="role-icon">
-                            <i class="fa-solid fa-house-user"></i>
-                        </div>
-                        <h3>صاحب شقة</h3>
-                        <p>الانضمام للعمارة الخاصة بك باستخدام الرمز المعطى لك</p>
+                        <div class="role-icon"><i class="fa-solid fa-house-user"></i></div>
+                        <h3 data-i18n="home.resident.title">صاحب شقة</h3>
+                        <p data-i18n="home.resident.desc">الانضمام للعمارة الخاصة بك باستخدام الرمز المعطى لك</p>
                     </div>
                 </div>
             </section>
@@ -68,32 +65,32 @@
             <!-- ====== Screen 2: Syndic Setup ====== -->
             <section id="screen-syndic-setup" class="screen">
                 <div class="auth-card">
-                    <button class="back-btn" onclick="app.navigateTo('screen-home')"><i class="fa-solid fa-arrow-right"></i> رجوع</button>
+                    <button class="back-btn" onclick="app.navigateTo('screen-home')"><i class="fa-solid fa-arrow-right"></i> <span data-i18n="btn.back">رجوع</span></button>
                     
                     <!-- Tabs -->
                     <div class="auth-tabs" style="display:flex; margin-bottom:1.5rem; border-bottom:1px solid var(--border);">
-                        <button id="tabSyndicLogin" class="tab-btn active" onclick="app.switchSyndicAuthTab('login')" style="flex:1; padding:0.75rem; background:transparent; border:none; border-bottom:2px solid var(--primary); color:var(--text-main); font-weight:bold; cursor:pointer; font-size:1rem;">تسجيل الدخول</button>
-                        <button id="tabSyndicRegister" class="tab-btn" onclick="app.switchSyndicAuthTab('register')" style="flex:1; padding:0.75rem; background:transparent; border:none; border-bottom:2px solid transparent; color:var(--text-muted); font-weight:bold; cursor:pointer; font-size:1rem;">حساب جديد</button>
+                        <button id="tabSyndicLogin" class="tab-btn active" onclick="app.switchSyndicAuthTab('login')" style="flex:1; padding:0.75rem; background:transparent; border:none; border-bottom:2px solid var(--primary); color:var(--text-main); font-weight:bold; cursor:pointer; font-size:1rem;" data-i18n="syndic.tab.login">تسجيل الدخول</button>
+                        <button id="tabSyndicRegister" class="tab-btn" onclick="app.switchSyndicAuthTab('register')" style="flex:1; padding:0.75rem; background:transparent; border:none; border-bottom:2px solid transparent; color:var(--text-muted); font-weight:bold; cursor:pointer; font-size:1rem;" data-i18n="syndic.tab.register">حساب جديد</button>
                     </div>
 
                     <!-- Login Form -->
                     <div id="syndicLoginFormWrapper">
                         <div class="auth-header" style="margin-bottom: 1.5rem;">
                             <i class="fa-solid fa-user-lock auth-icon"></i>
-                            <h2>تسجيل الدخول للسانديك</h2>
-                            <p>أدخل رمز العمارة الخاص بك للوصول للوحة التحكم.</p>
+                            <h2 data-i18n="syndic.login.title">تسجيل الدخول للسانديك</h2>
+                            <p data-i18n="syndic.login.subtitle">أدخل رمز العمارة الخاص بك للوصول للوحة التحكم.</p>
                         </div>
                         <form id="syndicLoginForm" onsubmit="app.loginSyndic(event)">
                             <div class="input-group">
-                                <label for="syndicLoginCode">رمز العمارة</label>
-                                <input type="text" id="syndicLoginCode" required class="code-input" placeholder="مثال: AK7X9P" autocapitalize="characters" autocorrect="off" autocomplete="off" spellcheck="false">
+                                <label for="syndicLoginCode" data-i18n="syndic.login.code">رمز العمارة</label>
+                                <input type="text" id="syndicLoginCode" required class="code-input" placeholder="AK7X9P" autocapitalize="characters" autocorrect="off" autocomplete="off" spellcheck="false">
                             </div>
                             <div class="input-group">
-                                <label for="syndicLoginPassword">الرمز السري للمدير</label>
-                                <input type="password" id="syndicLoginPassword" required placeholder="أدخل الرمز السري" autocomplete="current-password">
+                                <label for="syndicLoginPassword" data-i18n="syndic.login.password">الرمز السري للمدير</label>
+                                <input type="password" id="syndicLoginPassword" required data-i18n-attr="placeholder" data-i18n="syndic.login.password" placeholder="أدخل الرمز السري" autocomplete="current-password">
                             </div>
-                            <div id="syndicLoginError" class="error-msg d-none"><i class="fa-solid fa-circle-exclamation"></i> خطأ في رمز العمارة أو الرمز السري.</div>
-                            <button type="submit" class="btn btn-primary btn-block">دخول <i class="fa-solid fa-right-to-bracket"></i></button>
+                            <div id="syndicLoginError" class="error-msg d-none"><i class="fa-solid fa-circle-exclamation"></i> <span data-i18n="syndic.login.error">خطأ في رمز العمارة أو الرمز السري.</span></div>
+                            <button type="submit" class="btn btn-primary btn-block"><span data-i18n="syndic.login.btn">دخول</span> <i class="fa-solid fa-right-to-bracket"></i></button>
                         </form>
                     </div>
 
@@ -101,24 +98,23 @@
                     <div id="syndicRegisterFormWrapper" class="d-none">
                         <div class="auth-header" style="margin-bottom: 1.5rem;">
                             <i class="fa-solid fa-user-tie auth-icon"></i>
-                            <h2>إنشاء حساب العمارة</h2>
-                            <p>قم بإنشاء السجل الخاص بعمارتك لتبدأ في إدارتها.</p>
+                            <h2 data-i18n="syndic.reg.title">إنشاء حساب العمارة</h2>
+                            <p data-i18n="syndic.reg.subtitle">قم بإنشاء السجل الخاص بعمارتك لتبدأ في إدارتها.</p>
                         </div>
-                        
                         <form id="syndicForm" onsubmit="app.registerSyndic(event)">
                             <div class="input-group">
-                                <label for="syndicName">اسم المسؤول الكامل</label>
-                                <input type="text" id="syndicName" required placeholder="مثال: أحمد محمد" autocomplete="name" autocapitalize="words">
+                                <label for="syndicName" data-i18n="syndic.reg.name">اسم المسؤول الكامل</label>
+                                <input type="text" id="syndicName" required placeholder="" autocomplete="name" autocapitalize="words">
                             </div>
                             <div class="input-group">
-                                <label for="buildingName">اسم العمارة أو المجمع</label>
-                                <input type="text" id="buildingName" required placeholder="مثال: إقامة النور" autocapitalize="words">
+                                <label for="buildingName" data-i18n="syndic.reg.building">اسم العمارة أو المجمع</label>
+                                <input type="text" id="buildingName" required placeholder="" autocapitalize="words">
                             </div>
                             <div class="input-group">
-                                <label for="syndicPasswordReg">الرمز السري للمسؤول</label>
-                                <input type="password" id="syndicPasswordReg" required placeholder="اختر رمزاً سرياً لتدخل به لاحقاً" autocomplete="new-password">
+                                <label for="syndicPasswordReg" data-i18n="syndic.reg.password">الرمز السري للمسؤول</label>
+                                <input type="password" id="syndicPasswordReg" required placeholder="" autocomplete="new-password">
                             </div>
-                            <button type="submit" class="btn btn-primary btn-block">إنشاء حساب جديد <i class="fa-solid fa-check"></i></button>
+                            <button type="submit" class="btn btn-primary btn-block"><span data-i18n="syndic.reg.btn">إنشاء حساب جديد</span> <i class="fa-solid fa-check"></i></button>
                         </form>
                     </div>
 
@@ -218,30 +214,30 @@
             <!-- ====== Screen 4: Resident Setup ====== -->
             <section id="screen-resident-setup" class="screen">
                 <div class="auth-card">
-                    <button class="back-btn" onclick="app.navigateTo('screen-home')"><i class="fa-solid fa-arrow-right"></i> رجوع</button>
+                    <button class="back-btn" onclick="app.navigateTo('screen-home')"><i class="fa-solid fa-arrow-right"></i> <span data-i18n="btn.back">رجوع</span></button>
                     <div class="auth-header">
                         <i class="fa-solid fa-house-user auth-icon"></i>
-                        <h2>تسجيل الدخول كصاحب شقة</h2>
-                        <p>أدخل بياناتك ورمز العمارة الذي استلمته من السانديك.</p>
+                        <h2 data-i18n="resident.title">تسجيل الدخول كصاحب شقة</h2>
+                        <p data-i18n="resident.subtitle">أدخل بياناتك ورمز العمارة الذي استلمته من السانديك.</p>
                     </div>
                     
                     <form id="residentForm" onsubmit="app.registerResident(event)">
                         <div class="input-group">
-                            <label for="residentName">اسم صاحب الشقة</label>
-                            <input type="text" id="residentName" required placeholder="مثال: يوسف علي" autocapitalize="words" autocomplete="name">
+                            <label for="residentName" data-i18n="resident.name">اسم صاحب الشقة</label>
+                            <input type="text" id="residentName" required placeholder="" autocapitalize="words" autocomplete="name">
                         </div>
                         <div class="input-group">
-                            <label for="apartmentNumber">رقم الشقة (أو الباب)</label>
-                            <input type="text" id="apartmentNumber" required placeholder="مثال: 12 أو B-4" autocapitalize="none" autocorrect="off">
+                            <label for="apartmentNumber" data-i18n="resident.apt">رقم الشقة (أو الباب)</label>
+                            <input type="text" id="apartmentNumber" required placeholder="12" autocapitalize="none" autocorrect="off">
                         </div>
                         <div class="input-group">
-                            <label for="joinCode">رمز العمارة السري</label>
-                            <input type="text" id="joinCode" required placeholder="أدخل الرمز المكون من 6 أرقام/حروف" class="code-input" autocapitalize="characters" autocorrect="off" autocomplete="off" spellcheck="false">
+                            <label for="joinCode" data-i18n="resident.code">رمز العمارة السري</label>
+                            <input type="text" id="joinCode" required placeholder="AK7X9P" class="code-input" autocapitalize="characters" autocorrect="off" autocomplete="off" spellcheck="false">
                         </div>
                         
-                        <div id="joinError" class="error-msg d-none"><i class="fa-solid fa-circle-exclamation"></i> الرمز غير صحيح! المرجو التأكد من مسؤول العمارة.</div>
+                        <div id="joinError" class="error-msg d-none"><i class="fa-solid fa-circle-exclamation"></i> <span data-i18n="resident.error">الرمز غير صحيح! المرجو التأكد من مسؤول العمارة.</span></div>
 
-                        <button type="submit" class="btn btn-primary btn-block">انضمام للعمارة <i class="fa-solid fa-right-to-bracket"></i></button>
+                        <button type="submit" class="btn btn-primary btn-block"><span data-i18n="resident.btn">انضمام للعمارة</span> <i class="fa-solid fa-right-to-bracket"></i></button>
                     </form>
                 </div>
             </section>
@@ -320,19 +316,19 @@
             <!-- Messages will be injected here -->
         </div>
         <form class="chat-input-area" onsubmit="app.sendMessage(event)" id="chatForm">
-            <label for="chatCameraInput" class="attachment-btn" title="التقاط صورة بالكاميرا">
+            <label for="chatCameraInput" class="attachment-btn">
                 <i class="fa-solid fa-camera"></i>
             </label>
             <input type="file" id="chatCameraInput" class="d-none" onchange="app.handleFileSelect(event)" accept="image/*" capture="environment">
 
-            <label for="chatFileInput" class="attachment-btn" title="إرفاق ملف أو فيديو">
+            <label for="chatFileInput" class="attachment-btn">
                 <i class="fa-solid fa-paperclip"></i>
             </label>
             <input type="file" id="chatFileInput" class="d-none" onchange="app.handleFileSelect(event)" accept="image/*,video/*,.pdf,.doc,.docx,.txt">
             
             <div style="flex:1; display:flex; flex-direction:column;">
                 <div id="chatFilePreview" class="d-none" style="font-size:0.75rem; background:#e0f2fe; color:#0369a1; padding:2px 8px; border-radius:4px; margin-bottom:4px; max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"></div>
-                <input type="text" id="chatMessageInput" placeholder="رسالة، صورة، أو ملف...">
+                <input type="text" id="chatMessageInput" data-i18n-attr="placeholder" data-i18n="chat.placeholder" placeholder="رسالة، صورة، أو ملف...">
             </div>
             <button type="submit" class="btn btn-primary" id="chatSendBtn" style="height:auto; padding:0 1.2rem;"><i class="fa-solid fa-paper-plane"></i></button>
         </form>
@@ -343,7 +339,6 @@
     
     <!-- Cross-browser Polyfills -->
     <script>
-        // requestAnimationFrame polyfill
         (function(){
             var lastTime=0;
             ['webkit','moz','ms','o'].forEach(function(p){
@@ -356,15 +351,14 @@
             };
             if(!window.cancelAnimationFrame) window.cancelAnimationFrame=function(id){clearTimeout(id);};
         })();
-        // Object.assign polyfill
         if(typeof Object.assign!='function'){Object.defineProperty(Object,'assign',{value:function assign(t){if(t==null)throw new TypeError('Cannot convert undefined or null to object');var to=Object(t);for(var i=1;i<arguments.length;i++){var s=arguments[i];if(s!=null){for(var k in s){if(Object.prototype.hasOwnProperty.call(s,k))to[k]=s[k];}}}return to;},writable:true,configurable:true});}
-        // Promise.finally polyfill
         if(!Promise.prototype.finally){Promise.prototype.finally=function(fn){return this.then(function(v){return Promise.resolve(fn()).then(function(){return v;});},function(e){return Promise.resolve(fn()).then(function(){throw e;});});};}
     </script>
 
     <!-- App Scripts -->
     <script src="config.js?v=14"></script>
-    <script src="script.js?v=14"></script>
+    <script src="i18n.js?v=1"></script>
+    <script src="script.js?v=15"></script>
 
     <!-- Particle Animation -->
     <script>

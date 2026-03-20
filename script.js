@@ -7,8 +7,11 @@ const app = {
     
     // Initialize App
     async init() {
+        // Apply saved language (default: Arabic)
+        if(typeof i18n !== 'undefined') i18n.apply();
         await this.checkLoginState();
     },
+
 
     // UI Navigation
     navigateTo(screenId) {
