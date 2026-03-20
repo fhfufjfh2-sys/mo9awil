@@ -659,6 +659,7 @@ const app = {
             if(error) throw error;
             
             document.getElementById('chatFileInput').value = '';
+            if(document.getElementById('chatCameraInput')) document.getElementById('chatCameraInput').value = '';
             document.getElementById('chatFilePreview').classList.add('d-none');
             this.selectedChatFile = null;
             

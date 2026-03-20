@@ -326,7 +326,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0.6rem 0.8rem;
+    padding: 0.6rem 0.5rem;
     color: var(--text-muted);
     background: transparent;
     cursor: pointer;
